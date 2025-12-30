@@ -1,0 +1,15 @@
+from functions.run_python_file import *
+
+if __name__ == "__main__":
+    print("Result for 'calculator/main.py':")
+    print(run_python_file("calculator", "main.py"))
+    print("Result for 'calculator/main.py' with '3 + 5':")
+    print(run_python_file("calculator", "main.py", ["3 + 5"]))
+    print("Result for 'calculator/tests.py':")
+    print(run_python_file("calculator", "tests.py"))
+    print("Result for 'main.py':")
+    print(run_python_file("calculator", "../main.py"))
+    print("Result for 'calculator/nonexistent.py':")
+    print(run_python_file("calculator", "nonexistent.py"))
+    print("Result for 'calculator/lorem.txt':")
+    print(run_python_file("calculator", "lorem.txt"))
