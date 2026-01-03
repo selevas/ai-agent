@@ -2,6 +2,8 @@ import argparse
 import os
 from dotenv import load_dotenv
 
+from prompts import system_prompt
+
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
 if api_key is None:
@@ -18,7 +20,11 @@ def main():
     parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     args = parser.parse_args()
     messages = [types.Content(role="user", parts=[types.Part(text=args.user_prompt)])]
-    response = client.models.generate_content(model="gemini-2.5-flash", contents=messages)
+    response = client.models.generate_content(
+        model="gemini-2.5-flash",
+        contents=messages,
+        config=types.GenerateContentConfig(system_instruction=system_prompt),
+    )
     if response.usage_metadata is None:
         raise RuntimeError("The request to Gemini failed.")
     if args.verbose == True:
