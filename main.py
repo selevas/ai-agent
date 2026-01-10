@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 from prompts import system_prompt
-from call_function import available_functions
+from call_function import available_functions, call_function
 
 load_dotenv()
 api_key = os.environ.get("GEMINI_API_KEY")
@@ -38,8 +38,18 @@ def main():
         print("Response:")
         print(response.text)
     else:
+        function_results = []
         for call in response.function_calls:
-            print(f"Calling function: {call.name}({call.args})")
+            function_call_result = call_function(call)
+            if function_call_result.parts is None or len(function_call_result.parts) == 0:
+                raise Exception("types.Content.parts missing from function types.Content call result")
+            if function_call_result.parts[0].function_response is None:
+                raise Exception("Call result types.Content.parts[0].function_response is missing")
+            if function_call_result.parts[0].function_response.response is None:
+                raise Exception("Call response missing in result types.Content.parts[0].function_response.response")
+            function_results.append(function_call_result.parts[0].function_response.response)
+            if args.verbose == True:
+                print(f"-> {function_call_result.parts[0].function_response.response}")
 
 if __name__ == "__main__":
     main()
