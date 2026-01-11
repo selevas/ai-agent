@@ -1,5 +1,6 @@
 import argparse
 import os
+import sys
 from dotenv import load_dotenv
 
 from prompts import system_prompt
@@ -51,9 +52,10 @@ def main():
                     raise Exception("Call result types.Content.parts[0].function_response is missing")
                 if function_call_result.parts[0].function_response.response is None:
                     raise Exception("Call response missing in result types.Content.parts[0].function_response.response")
-                function_results.append(function_call_result.parts[0].function_response.response)
+                function_results.append(function_call_result.parts[0])
                 if args.verbose == True:
                     print(f"-> {function_call_result.parts[0].function_response.response}")
+            messages.append(types.Content(role="user", parts=function_results))
     print("Maximum number of iterations reached. Aborting conversation.")
     sys.exit(1)
 
